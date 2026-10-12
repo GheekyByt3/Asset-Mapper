@@ -22,7 +22,7 @@ Feed it a list of root domains. It gathers subdomains from several sources, reso
 ## Install
 
 ```bash
-git clone <repo-url> Asset-Mapper && cd Asset-Mapper
+git clone https://github.com/GheekyByt3/Asset-Mapper.git Asset-Mapper && cd Asset-Mapper
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
