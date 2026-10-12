@@ -144,10 +144,16 @@ def test_end_to_end_workbook(tmp_path, monkeypatch):
     assert hdr[0] == "Scope Validation Status" and hdr[-1] == "Notes"
     assert hdr[1:3] == ["Root Domain", "Hostname"] and "In Scope? (Client)" not in hdr
     rec = [[c.value for c in r] for r in ar.iter_rows(min_row=2)]
-    for r in range(1, ar.max_row + 1):                     # light orange on first and last column
+    for col in "ABM":                                      # headers share the standard dark blue
+        assert ar[f"{col}1"].fill.fgColor.rgb.endswith("1F3864")
+        assert ar[f"{col}1"].font.color.rgb.endswith("FFFFFF")
+    for r in range(2, ar.max_row + 1):                     # orange status cells, light-blue notes cells
         assert ar[f"A{r}"].fill.fgColor.rgb.endswith("FCD5B4")
-        assert ar[f"M{r}"].fill.fgColor.rgb.endswith("FCD5B4")
-    assert ar["B2"].fill.fgColor.rgb != ar["A2"].fill.fgColor.rgb
+        assert ar[f"M{r}"].fill.fgColor.rgb.endswith("DDEBF7")
+    assert not (ar["B2"].fill.fgColor.rgb or "").endswith(("FCD5B4", "DDEBF7"))
+    for row in ar.iter_rows(min_row=1, max_row=ar.max_row, max_col=ar.max_column):
+        for c in row:                                      # all borders on every cell
+            assert all(s.style == "thin" for s in (c.border.left, c.border.right, c.border.top, c.border.bottom))
     assert all(r[0] in (None, "") and r[-1] in (None, "") for r in rec)  # blank for the client
     dv = ar.data_validations.dataValidation
     assert len(dv) == 1 and "A2" in str(dv[0].sqref) and "Out of Scope" in dv[0].formula1

@@ -36,7 +36,7 @@ import dns.exception
 import dns.resolver
 import requests
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
@@ -49,7 +49,8 @@ CLOUD_KEYWORDS = ("CLOUDFLARE", "AMAZON", "AWS", "AKAMAI", "FASTLY", "MICROSOFT"
                   "DIGITALOCEAN", "LINODE", "OVH", "HETZNER", "ORACLE", "VERCEL", "NETLIFY",
                   "GITHUB", "HEROKU", "SALESFORCE", "ZSCALER")
 
-CLIENT_FILL = "FCD5B4"  # light orange: cells the client fills in
+CLIENT_FILL = "FCD5B4"  # light orange: scope status cells the client fills in
+NOTES_FILL = "DDEBF7"   # light blue: notes cells
 SCOPE_OPTIONS = "In Scope,Out of Scope,Unsure"
 HOST_COLS = ["Scope Validation Status", "Root Domain", "Hostname", "IP Address", "Sources",
              "# Sources", "Cloud/CDN", "ASN", "ASN Name", "Network Range", "Country", "Flags",
@@ -270,14 +271,21 @@ def add_scope_dropdown(ws, col_letter, options="Yes,No,Unsure"):
     dv.add(f"{col_letter}2:{col_letter}{ws.max_row}")
 
 
-def highlight_client_column(ws, col_letter, width=None):
-    """Light-orange fill on a column the client must fill in (header + every row)."""
-    fill = PatternFill("solid", fgColor=CLIENT_FILL)
-    ws[f"{col_letter}1"].font = Font(bold=True, color="000000")
-    for row in range(1, ws.max_row + 1):
+def highlight_client_column(ws, col_letter, color, width=None):
+    """Tint the data cells of a column the client fills in (header keeps the standard style)."""
+    fill = PatternFill("solid", fgColor=color)
+    for row in range(2, ws.max_row + 1):
         ws[f"{col_letter}{row}"].fill = fill
     if width:
         ws.column_dimensions[col_letter].width = width
+
+
+def add_all_borders(ws):
+    side = Side(style="thin", color="000000")
+    border = Border(left=side, right=side, top=side, bottom=side)
+    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, max_col=ws.max_column):
+        for c in row:
+            c.border = border
 
 
 def ip_sort_key(ip):
@@ -316,8 +324,9 @@ def write_workbook(path, domains, results, source_status, resolved_rows, unresol
     style_sheet(ws)
     last = get_column_letter(len(HOST_COLS))
     add_scope_dropdown(ws, "A", SCOPE_OPTIONS)
-    highlight_client_column(ws, "A", width=26)
-    highlight_client_column(ws, last, width=40)
+    highlight_client_column(ws, "A", CLIENT_FILL, width=26)
+    highlight_client_column(ws, last, NOTES_FILL, width=40)
+    add_all_borders(ws)
 
     by_ip = defaultdict(lambda: {"hosts": set(), "row": None})
     for r in resolved_rows:

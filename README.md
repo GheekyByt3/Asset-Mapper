@@ -63,7 +63,7 @@ See `examples/domains.example.txt` for the input format.
 | Sheet | Contents |
 |---|---|
 | **Summary** | Per-domain counts: hosts found by each source, resolved, unresolved, unique IPs |
-| **All Records** | One row per host and IP: root domain, hostname, IP, sources, cloud/CDN, ASN, network, country, flags. The first column, **Scope Validation Status** (light orange, dropdown: In Scope / Out of Scope / Unsure), and the last column, **Notes** (light orange), are left blank for the client to fill in |
+| **All Records** | One row per host and IP: root domain, hostname, IP, sources, cloud/CDN, ASN, network, country, flags. The first column, **Scope Validation Status** (light-orange cells, dropdown: In Scope / Out of Scope / Unsure), and the last column, **Notes** (light-blue cells), are left blank for the client to fill in |
 | **Unique IPs** | IPs with all hostnames pointing at them, same scope dropdown. Best sheet for confirming IP ownership |
 | **Unresolved** | Hostnames found but not resolving (stale DNS, AAAA-only, dead records) with DNS status |
 | **Source Status** | Per-source result or error. Check this before trusting coverage |
