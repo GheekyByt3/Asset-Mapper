@@ -1,0 +1,4 @@
+# One root domain per line. Comments and blank lines are ignored.
+# URLs are accepted; scheme and path are stripped.
+example.com
+https://example.org/

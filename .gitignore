@@ -1,0 +1,19 @@
+# Results contain client data: never commit them
+*.xlsx
+*.csv
+domains.txt
+!examples/*.txt
+
+# Python / env
+__pycache__/
+*.pyc
+.venv/
+venv/
+myenv/
+.pytest_cache/
+
+# OS / editors
+.DS_Store
+~$*
+.vscode/
+.idea/
