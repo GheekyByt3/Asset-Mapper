@@ -82,16 +82,6 @@ See `examples/domains.example.txt` for the input format.
 - Source coverage varies by domain. Always check **Source Status** for failed or skipped sources.
 - Spreadsheet cells beginning with `= + - @` are prefixed with `'` so hostile DNS data cannot become Excel formulas.
 
-## Development
-
-```bash
-pip install -r requirements-dev.txt
-pytest -q                 # includes a few live DNS tests
-SKIP_LIVE=1 pytest -q     # offline
-```
-
-Adding a source: write `src_<name>(domain, ctx)` returning `(set_of_hostnames, error_or_None)`, filter results with `normalize_host(name, domain)`, and register it in `SOURCES`.
-
 ## Ideas / roadmap
 
 Amass, Censys and Shodan sources; reverse-DNS sweeps of known client ranges; a per-source "unique finds" summary.
